@@ -114,15 +114,22 @@ class UserController extends RestfulController {
 			break
 			
 			case "create":
+			def error = null
 				def object = [
 					username:request.JSON.model.username,
 					passwordHash:request.JSON.model.passwordHash,
 				]
-	
-				object = userService.createObject(object)
+				try {
+					object = userService.createObject(object)
+					if (object.hasErrors()) {
+						error = 'Error' // TODO : get error message
+					}
+				} catch(Exception e) {
+					error = e.message // TODO : get error message from object hwne possible instead of long expection message
+				}
 				def newJson = [
 					model: object,
-					error: null
+					error: error
 				]
 				render newJson as JSON
 			break
