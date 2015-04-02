@@ -114,7 +114,7 @@ class UserController extends RestfulController {
 			break
 			
 			case "create":
-			def error = null
+				def error = null
 				def object = [
 					username:request.JSON.model.username,
 					passwordHash:request.JSON.model.passwordHash,
