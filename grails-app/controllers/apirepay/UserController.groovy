@@ -82,8 +82,6 @@ class UserController extends RestfulController {
 			break
 			
 			case "create":
-			if (restService.getUsernameForToken(request.JSON.token)!= null)
-			{
 				def object = [
 					username:request.JSON.model.username,
 					passwordHash:request.JSON.model.passwordHash,
@@ -95,15 +93,6 @@ class UserController extends RestfulController {
 					error: null
 				]
 				render newJson as JSON
-			}
-			else
-			{
-				def newJson = [
-					error: "Invalid Token"
-				]
-				render 
-			}
-			break
 
 			case "update":
 			if (restService.getUsernameForToken(request.JSON.token)!= null)
