@@ -47,6 +47,12 @@ class UserController extends RestfulController {
 		}
 	}
 	
+	private String utcFormat(def date) {
+		SimpleDateFormat f = new SimpleDateFormat(expFormat);
+		f.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return f.format(date);
+	}
+	
 	def show = {
 		//		if(params.ids && Reimburse.exists(params.id)){
 		//			render Reimburse.findById(params.id) as JSON
@@ -69,9 +75,9 @@ class UserController extends RestfulController {
 			{
 				def expDate = new Date()
 				use(TimeCategory) {
-					expDate = (expDate + 2.hours).format(expFormat)
+					expDate = (expDate + 2.hours) //.format(expFormat)
 				}
-				transParams.auth.expires = expDate
+				transParams.auth.expires = utcFormat(expDate)
 				paramstr = (transParams as JSON).toString();
 				hash = calculateHMAC(secret, paramstr)
 				object = userService.SignIn(request.JSON.model.username, request.JSON.model.passwordHash,false)
