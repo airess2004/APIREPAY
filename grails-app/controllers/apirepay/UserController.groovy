@@ -28,6 +28,7 @@ class UserController extends RestfulController {
 					customFormField : true,
 				],
 		];
+	def INVALID_TOKEN = "Invalid Token";
 
 	private final static String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 	
@@ -113,7 +114,7 @@ class UserController extends RestfulController {
 			else
 			{
 				def newJson = [
-					error: "Invalid Token"
+					error: INVALID_TOKEN
 				]
 				render newJson as JSON
 			}
@@ -154,7 +155,7 @@ class UserController extends RestfulController {
 			else
 			{
 				def newJson = [
-					error: "Invalid Token"
+					error: INVALID_TOKEN
 				]
 				render
 			}
@@ -172,7 +173,7 @@ class UserController extends RestfulController {
 			else
 			{
 				def newJson = [
-					error: "Invalid Token"
+					error: INVALID_TOKEN
 				]
 				render
 			}
