@@ -124,13 +124,15 @@ class UserService {
 				// Authentication failed, so display the appropriate message
 				// on the login page.
 				log.info "Authentication failure for user '${username}'."
-				return false
+				throw new Exception("Authentication Failure for user '${username}'.")
+				//return null
 			}
 			catch (Exception ex){
 				// Authentication failed, so display the appropriate message
 				// on the login page.
 				log.info "Authentication Exception for user '${username}'."
-				return false
+				throw new Exception("Authentication Exception for user '${username}'.")
+				//return null
 			}
 		}
 		def token = generateAndSaveTokenForUser(username, currentUser)
