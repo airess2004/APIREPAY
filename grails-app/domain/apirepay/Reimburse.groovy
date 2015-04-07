@@ -4,6 +4,7 @@ class Reimburse {
 	
 	String title
 	String description
+	Integer idx
 	Double	total
 	Date	projectDate
 	Date	sentDate
