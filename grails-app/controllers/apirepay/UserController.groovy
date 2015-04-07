@@ -200,7 +200,7 @@ class UserController extends RestfulController {
 			else
 			{
 				def newJson = [
-					error: INVALID_TOKEN
+					error: null //INVALID_TOKEN
 				]
 				render newJson as JSON
 			}
