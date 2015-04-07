@@ -34,8 +34,8 @@ class UserService {
 	
 	def createObject(object){
 		ShiroUser newObject = new ShiroUser()
-		newObject.fullname = String.valueOf(object.fullname).toUpperCase()
-		newObject.username = String.valueOf(object.username).toUpperCase()
+		newObject.fullname = String.valueOf(object.fullname).trim().toUpperCase()
+		newObject.username = String.valueOf(object.username).trim().toUpperCase()
 		newObject.passwordHash = new Sha256Hash(object.passwordHash).toHex()
 		newObject.isDeleted = false
 		object = userValidatorService.createObjectValidation(newObject)
@@ -49,7 +49,8 @@ class UserService {
 	
 	def updateObject(def object){
 		def newObject = ShiroUser.read(object.id)
-		newObject.username = String.valueOf(object.username).toUpperCase()
+		newObject.fullname = String.valueOf(object.fullname).trim().toUpperCase()
+		newObject.username = String.valueOf(object.username).trim().toUpperCase()
 		newObject.passwordHash = new Sha256Hash(object.passwordHash).toHex()
 		object = userValidatorService.updateObjectValidation(newObject)
 		if (object.errors.getErrorCount() == 0)
@@ -85,7 +86,7 @@ class UserService {
 	{
 		Subject currentUser = SecurityUtils.getSubject();
 		if ( !currentUser.isAuthenticated() ) {
-			def authToken = new UsernamePasswordToken(String.valueOf(username).toUpperCase(), password) //new Sha256Hash(password).toHex()
+			def authToken = new UsernamePasswordToken(String.valueOf(username).trim().toUpperCase(), password) //new Sha256Hash(password).toHex()
 			authToken.rememberMe = rememberMe
 			try{
 				currentUser.login(authToken)
@@ -105,14 +106,14 @@ class UserService {
 				//return null
 			}
 		}
-		def token = generateAndSaveTokenForUser(username, currentUser)
+		def token = generateAndSaveTokenForUser(String.valueOf(username).trim().toUpperCase(), currentUser)
 		return token
 	}
 	
 	public def signOut(String username,String username2)
 	{
 		try{
-			if (String.valueOf(username).toUpperCase() == String.valueOf(username2).toUpperCase())
+			if (String.valueOf(username).trim().toUpperCase() == String.valueOf(username2).trim().toUpperCase())
 			{
 				restService.deleteToken(username2)
 			}

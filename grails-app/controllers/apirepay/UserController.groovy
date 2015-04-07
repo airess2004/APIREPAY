@@ -82,7 +82,7 @@ class UserController extends RestfulController {
 				paramstr = (transParams as JSON).toString();
 				hash = calculateHMAC(secret, paramstr)
 				object = userService.SignIn(request.JSON.model.username, request.JSON.model.passwordHash,false)
-				userobj = ShiroUser.find{ username == String.valueOf(request.JSON.model.username).toUpperCase() }
+				userobj = ShiroUser.find{ username == String.valueOf(request.JSON.model.username).trim().toUpperCase() }
 				
 			} catch(Exception e) {
 				err = e.message;
