@@ -70,7 +70,7 @@ class UserController extends RestfulController {
 			def err = null;
 			String hash = "";
 			String paramstr = null;
-			String fullname;
+			def userobj;
 			def object = null;
 			try
 			{
@@ -82,7 +82,7 @@ class UserController extends RestfulController {
 				paramstr = (transParams as JSON).toString();
 				hash = calculateHMAC(secret, paramstr)
 				object = userService.SignIn(request.JSON.model.username, request.JSON.model.passwordHash,false)
-				fullname = ShiroUser.find{ username == String.valueOf(request.JSON.model.username).toUpperCase() }
+				userobj = ShiroUser.find{ username == String.valueOf(request.JSON.model.username).toUpperCase() }
 				
 			} catch(Exception e) {
 				err = e.message;
@@ -91,7 +91,7 @@ class UserController extends RestfulController {
 				token: object,
 				hash : hash,
 				param : paramstr,
-				model : [fullname : fullname] ,
+				model : [fullname : userobj.fullname] ,
 				error: err
 			]
 			render newJson as JSON
