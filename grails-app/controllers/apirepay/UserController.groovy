@@ -91,7 +91,7 @@ class UserController extends RestfulController {
 				token: object,
 				hash : hash,
 				param : paramstr,
-				model : [fullname : userobj.fullname] ,
+				model : [fullname : userobj?.fullname] ,
 				error: err
 			]
 			render newJson as JSON
