@@ -191,7 +191,7 @@ class UserController extends RestfulController {
 			def username = restService.getUsernameForToken(request.JSON.token)
 			if (username != null)
 			{
-				def object = userService.signOut(request.JSON.username, username )
+				def object = userService.signOut(request.JSON.model.username, username )
 				def newJson = [
 					error: object
 				]
