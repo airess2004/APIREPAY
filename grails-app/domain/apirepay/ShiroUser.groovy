@@ -5,7 +5,7 @@ import java.util.Date;
 class ShiroUser {
     String username
     String passwordHash
-    
+    String fullname
 	
 	boolean isDeleted
 	Date dateCreated

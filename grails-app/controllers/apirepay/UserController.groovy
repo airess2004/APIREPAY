@@ -64,13 +64,13 @@ class UserController extends RestfulController {
 
 
 	def save = {
-		def newObject = request.JSON.model
 		switch(request.JSON.method)
 		{
 			case "login":
 			def err = null;
 			String hash = "";
 			String paramstr = null;
+			String fullname;
 			def object = null;
 			try
 			{
@@ -82,17 +82,21 @@ class UserController extends RestfulController {
 				paramstr = (transParams as JSON).toString();
 				hash = calculateHMAC(secret, paramstr)
 				object = userService.SignIn(request.JSON.model.username, request.JSON.model.passwordHash,false)
+				fullname = ShiroUser.find{ username == String.valueOf(request.JSON.model.username).toUpperCase() }
+				
 			} catch(Exception e) {
 				err = e.message;
 			}
 			def newJson = [
 				token: object,
 				hash : hash,
-				model : paramstr,
+				param : paramstr,
+				model : [fullname : fullname] ,
 				error: err
 			]
 			render newJson as JSON
 			break
+			
 			
 			case "getHash":
 			if (restService.getUsernameForToken(request.JSON.token)!= null)
@@ -121,17 +125,21 @@ class UserController extends RestfulController {
 			break
 			
 			case "create":
+				def error
 				def object = [
+					fullname:request.JSON.model.fullname,
 					username:request.JSON.model.username,
 					passwordHash:request.JSON.model.passwordHash,
 				]
 				try {
 					object = userService.createObject(object)
 					if (object.hasErrors()) {
-						error = 'Error' // TODO : get error message
+						object.errors.allErrors.each {
+							 error = it.defaultMessage
+						}
 					}
 				} catch(Exception e) {
-					error = e.message // TODO : get error message from object hwne possible instead of long expection message
+					 error = e.message // TODO : get error message from object hwne possible instead of long expection message
 				}
 				def newJson = [
 					model: object,
@@ -176,6 +184,25 @@ class UserController extends RestfulController {
 					error: INVALID_TOKEN
 				]
 				render
+			}
+			break
+			
+			case "logout":
+			def username = restService.getUsernameForToken(request.JSON.token)
+			if (username != null)
+			{
+				def object = userService.signOut(request.JSON.username, username )
+				def newJson = [
+					error: object
+				]
+				render newJson as JSON
+			}
+			else
+			{
+				def newJson = [
+					error: INVALID_TOKEN
+				]
+				render newJson as JSON
 			}
 			break
 		}

@@ -19,6 +19,15 @@ class RestService {
         getCacheByToken().put(token, username)
     }
 
+	void deleteToken(String username)
+	{
+		def previousToken = getCacheByUsername().get(username)?.get()
+		if (previousToken) {
+			// evict previous token
+			getCacheByToken().evict(previousToken)
+		}
+	}
+	
     String generateToken(username, request2) {
         String charset = (('A'..'Z') + ('0'..'9')).join()
         Integer length = 16

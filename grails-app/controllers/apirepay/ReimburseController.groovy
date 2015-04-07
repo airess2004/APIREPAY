@@ -84,6 +84,10 @@ class ReimburseController extends RestfulController {
 					]
 					render newJson as JSON
 					break
+					
+				case "send":
+				
+				break	
 			}
 		}
 		else

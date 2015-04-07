@@ -34,6 +34,7 @@ class UserService {
 	
 	def createObject(object){
 		ShiroUser newObject = new ShiroUser()
+		newObject.fullname = String.valueOf(object.fullname).toUpperCase()
 		newObject.username = String.valueOf(object.username).toUpperCase()
 		newObject.passwordHash = new Sha256Hash(object.passwordHash).toHex()
 		newObject.isDeleted = false
@@ -82,43 +83,12 @@ class UserService {
 	
 	public def SignIn(String username, String password, boolean rememberMe = false)
 	{
-		//Object userIdentity = username
-//		String realmName = "ShiroDbRealm";
-//		PrincipalCollection principals = new SimplePrincipalCollection(username, realmName);
-//		Subject subject = new Subject.Builder().principals(principals).buildSubject();
-//		ThreadContext.bind(subject)
 		Subject currentUser = SecurityUtils.getSubject();
 		if ( !currentUser.isAuthenticated() ) {
 			def authToken = new UsernamePasswordToken(String.valueOf(username).toUpperCase(), password) //new Sha256Hash(password).toHex()
-			// Support for "remember me"
 			authToken.rememberMe = rememberMe
-//			if (rememberMe) {
-//				authToken.rememberMe = true
-//			}
-			
-			
-			// If a controller redirected to this page, redirect back
-			// to it. Otherwise redirect to the root URI.
-			//def targetUri = params.targetUri ?: "/"
-				
-			// Handle requests saved by Shiro filters.
-//			SavedRequest savedRequest = WebUtils.getSavedRequest(request)
-//			if (savedRequest) {
-//				targetUri = savedRequest.requestURI - request.contextPath
-//				if (savedRequest.queryString) targetUri = targetUri + '?' + savedRequest.queryString
-//			}
-				
 			try{
-				// Perform the actual login. An AuthenticationException
-				// will be thrown if the username is unrecognised or the
-				// password is incorrect.
-				
-				currentUser.login(authToken) //SecurityUtils.subject.login(authToken)
-				//SecurityUtils.subject.getSession().setTimeout(300000)
-				
-//				log.info "Welcome" //"Redirecting to '${targetUri}'."
-//				redirect(uri: targetUri)
-//				getUI().getPage().getCurrent().getJavaScript().execute("window.location.reload();");
+				currentUser.login(authToken)
 				}
 			catch (AuthenticationException ex){
 				// Authentication failed, so display the appropriate message
@@ -137,6 +107,24 @@ class UserService {
 		}
 		def token = generateAndSaveTokenForUser(username, currentUser)
 		return token
+	}
+	
+	public def signOut(String username,String username2)
+	{
+		try{
+			if (String.valueOf(username).toUpperCase() == String.valueOf(username2).toUpperCase())
+			{
+				restService.deleteToken(username2)
+			}
+			else
+			{
+				return "Invalid User"
+			}
+			return null
+		}
+		catch (Exception ex){
+			return ex.message
+		}
 	}
 	
 	private generateAndSaveTokenForUser(username, request) {
