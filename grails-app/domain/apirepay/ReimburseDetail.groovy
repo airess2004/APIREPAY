@@ -1,5 +1,7 @@
 package apirepay
 
+import java.util.Date;
+
 class ReimburseDetail {
 	String name
 	String description 
@@ -10,7 +12,8 @@ class ReimburseDetail {
 	String	urlImageMedium
 	Boolean	isDeleted
 	Reimburse reimburse
-	
+	Date dateCreated
+	Date lastUpdated
 //	static belongsTo = Reimburse
 	
     static constraints = {

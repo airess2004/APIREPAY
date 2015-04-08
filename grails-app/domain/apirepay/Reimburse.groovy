@@ -1,5 +1,7 @@
 package apirepay
 
+import java.util.Date;
+
 class Reimburse {
 	
 	String title
@@ -10,10 +12,13 @@ class Reimburse {
 	Date	sentDate
 	Date	statusDate
 	Boolean	isSent
+	Boolean	isDone
 	Boolean	isDeleted
 	Integer	status
 	String	sentTo
 	ShiroUser user
+	Date dateCreated
+	Date lastUpdated
 	
 	static hasMany = [reimburseDetails : ReimburseDetail]
     static constraints = {
