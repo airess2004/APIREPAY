@@ -15,8 +15,27 @@ class ReimburseService {
 	{
 		return Reimburse.findAllByIsDeletedAndUser(false,user, [max: max, offset: offset ,sort: sortBy, order: Order])
 	}
-
-
+	
+	def getListFrom(def object,def user2)
+	{
+		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.dateCreated)
+		return Reimburse.findAll{dateCreated >= date && isDeleted == false && user == user2}
+	}
+	
+	def getList(def object,def user,Integer offset,Integer max,String sortBy,String Order)
+	{
+		if (object == null || object.col == null || object.col == "")
+		{
+			return Reimburse.findAllByIsDeletedAndUser(false,user, [max: max, offset: offset ,sort: sortBy, order: Order])
+		}
+		else
+		{
+			return Reimburse.findAll("from Reimburse as b where b.${object.col} = ${object.val} and b.isDeleted = false and b.user.id = ${user.id}",
+					[max: max, offset: offset ,sort: sortBy, order: Order])
+		}
+	}
+	
+	
 	def calculateTotal(object){
 		def valObject = Reimburse.read(object)
 		Double total = 0

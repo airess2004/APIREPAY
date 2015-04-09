@@ -12,7 +12,7 @@ class ReimburseController extends RestfulController {
 	def index() { }
 
 	def show = {
-	
+
 
 	}
 
@@ -34,13 +34,30 @@ class ReimburseController extends RestfulController {
 						render newJson as JSON
 					}else{
 						def newJson = [
-							model: reimburseService.getList(User,Integer.parseInt(request.JSON.offset)
-								,Integer.parseInt(request.JSON.max),request.JSON.sortBy,request.JSON.order).toArray(),
+							model: reimburseService.getList(request.JSON.filter,User,Integer.parseInt(request.JSON.offset)
+							,Integer.parseInt(request.JSON.max),request.JSON.sortBy,request.JSON.order).toArray(),
 							error: null
 						]
 						render  newJson as JSON
 					}
 					break
+
+				case "getFrom":
+					if(params.id && Reimburse.exists(params.id)){
+						def newJson = [
+							model: Reimburse.findById(params.id),
+							error: null
+						]
+						render newJson as JSON
+					}else{
+						def newJson = [
+							model: reimburseService.getListFrom(request.JSON.model,User),
+							error: null
+						]
+						render  newJson as JSON
+					}
+					break
+
 
 				case "create":
 					def object = [
@@ -84,10 +101,10 @@ class ReimburseController extends RestfulController {
 					]
 					render newJson as JSON
 					break
-					
+
 				case "send":
-				
-				break	
+
+					break
 			}
 		}
 		else
