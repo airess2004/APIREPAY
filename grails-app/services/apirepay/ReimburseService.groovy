@@ -60,7 +60,7 @@ class ReimburseService {
 		valObject.title = object.title
 		valObject.description = object.description
 		valObject.user = object.user
-		valObject.idx = object.idx
+		valObject.idx = 0
 		
 		if (valObject.projectDate != null)
 		{
