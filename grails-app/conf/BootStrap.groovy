@@ -1,5 +1,6 @@
 import apirepay.ShiroRole
 import apirepay.ShiroUser
+import grails.converters.JSON
 import org.apache.shiro.crypto.hash.Sha256Hash
 
 
@@ -7,13 +8,20 @@ class BootStrap {
 
     def init = { servletContext ->
 		//Shiro
+		
 		def adminRole = ShiroRole.findByNameAndIsDeleted("User",false)
 		if(adminRole==null){
-			adminRole = new ShiroRole(name: "User")
+			
+			adminRole = new ShiroRole()
+			adminRole.name = "User"
+			adminRole.isDeleted = false
 			adminRole.addToPermissions("*:*")
 			//adminRole.addToPermissions("admin")
 			adminRole.save(flush:true, failOnError:true)
 		}
+		
+		
+		
 //		if (ShiroUser.findAllByUsernameAndIsDeleted("ADMIN",false).isEmpty()) {
 //			def user = new ShiroUser(username: "ADMIN", passwordHash: new Sha256Hash("sysadmin").toHex())
 //			user.addToRoles(adminRole)
