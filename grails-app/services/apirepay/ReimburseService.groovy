@@ -1,5 +1,6 @@
 package apirepay
 
+import grails.converters.JSON
 import grails.transaction.Transactional
 import java.text.SimpleDateFormat
 
@@ -49,25 +50,28 @@ class ReimburseService {
 	}
 
 	def createObject(def object){
+		Reimburse valObject = new Reimburse()
+		valObject.isDone = false
+		valObject.isSent = false
+		valObject.isDeleted = false
+		valObject.total = 0
+		valObject.status = 0
+		valObject.sentTo = ""
+		valObject.title = object.title
+		valObject.description = object.description
+		valObject.user = object.user
+		valObject.idx = object.idx
 		
-		object.isSent = false
-		object.isDeleted = false
-		object.total = 0
-		object.status = 0
-		object.sentTo = ""
-		object.title = object.title
-		object.description = object.description
-		object.user = object.user
-		if (object.projectDate != null)
+		if (valObject.projectDate != null)
 		{
-			object.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.projectDate)
+			valObject.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.projectDate)
 		}
-		object = reimburseValidationService.createObjectValidation(object as Reimburse)
-		if (object.errors.getErrorCount() == 0)
+		valObject = reimburseValidationService.createObjectValidation(valObject as Reimburse)
+		if (valObject.errors.getErrorCount() == 0)
 		{
-			object = object.save()
+			valObject = valObject.save()
 		}
-		return object
+		return valObject
 	}
 
 	def updateObject(def object){
