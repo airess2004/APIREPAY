@@ -34,8 +34,8 @@ class ReimburseController extends RestfulController {
 						render newJson as JSON
 					}else{
 						def newJson = [
-							model: reimburseService.getList(request.JSON.filter,User,Integer.parseInt(request.JSON.offset)
-							,Integer.parseInt(request.JSON.max),request.JSON.sortBy,request.JSON.order).toArray(),
+							model: reimburseService.getList(request.JSON.filter,User,request.JSON.offset,
+								request.JSON.max,request.JSON.sortBy,request.JSON.order).toArray(),
 							error: null
 						]
 						render  newJson as JSON
@@ -63,7 +63,7 @@ class ReimburseController extends RestfulController {
 					def object = [
 						title:request.JSON.model.title,
 						description:request.JSON.model.description,
-						projectDate:request.JSON.model.projectDate.toString(),
+						projectDate:request.JSON.model.projectDate,//.toString(),
 						user:User
 					]
 					object = reimburseService.createObject(object)

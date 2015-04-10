@@ -30,8 +30,8 @@ class ReimburseDetailController extends RestfulController {
 					render newJson as JSON
 				}else{
 					def newJson = [
-						model: reimburseDetailService.getList(Long.parseLong(request.JSON.reimburseId),
-							Integer.parseInt(request.JSON.offset),Integer.parseInt(request.JSON.max),
+						model: reimburseDetailService.getList(request.JSON.reimburseId,
+							request.JSON.offset,request.JSON.max,
 							request.JSON.sortBy,request.JSON.order).toArray(),
 						error: null
 					]
