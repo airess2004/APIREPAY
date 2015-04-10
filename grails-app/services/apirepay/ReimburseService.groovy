@@ -49,25 +49,25 @@ class ReimburseService {
 	}
 
 	def createObject(def object){
-		def newObject = new Reimburse()
-		newObject.isSent = false
-		newObject.isDeleted = false
-		newObject.total = 0
-		newObject.status = 0
-		newObject.sentTo = ""
-		newObject.title = object.title
-		newObject.description = object.description
-		newObject.user = object.user
+		
+		object.isSent = false
+		object.isDeleted = false
+		object.total = 0
+		object.status = 0
+		object.sentTo = ""
+		object.title = object.title
+		object.description = object.description
+		object.user = object.user
 		if (object.projectDate != null)
 		{
-			newObject.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.projectDate)
+			object.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.projectDate)
 		}
-		newObject = reimburseValidationService.createObjectValidation(newObject as Reimburse)
-		if (newObject.errors.getErrorCount() == 0)
+		object = reimburseValidationService.createObjectValidation(object as Reimburse)
+		if (object.errors.getErrorCount() == 0)
 		{
-			newObject = newObject.save()
+			object = object.save()
 		}
-		return newObject
+		return object
 	}
 
 	def updateObject(def object){
