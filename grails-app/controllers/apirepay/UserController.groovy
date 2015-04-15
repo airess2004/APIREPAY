@@ -48,6 +48,15 @@ class UserController extends RestfulController {
 		}
 	}
 	
+	// Simple ISO Converter https://gist.github.com/kdabir/6bfe265d2f3c2f9b438b
+	private String DateToISOString(Date date) {
+		return new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"));
+	}
+	
+	private Date ISOStringToDate(String dateString) {
+		return Date.parse("yyyy-MM-dd'T'HH:mm:ss'Z'", dateString);
+	}
+	 
 	private String utcFormat(def date) {
 		SimpleDateFormat f = new SimpleDateFormat(expFormat);
 		f.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -88,6 +97,7 @@ class UserController extends RestfulController {
 				err = e.message;
 			}
 			def newJson = [
+				timeStamp : DateToISOString(new Date()),
 				token: object,
 				hash : hash,
 				param : paramstr,
@@ -110,6 +120,7 @@ class UserController extends RestfulController {
 						err = e.message;
 					}
 					def result = [
+						timeStamp : DateToISOString(new Date()),
 						error : err,
 						hash : hash,
 					]
@@ -139,7 +150,7 @@ class UserController extends RestfulController {
 						}
 					}
 				} catch(Exception e) {
-					 error = e.message // TODO : get error message from object hwne possible instead of long expection message
+					 error = e.message // TODO : get error message from object when possible instead of long expection message
 				}
 				def newJson = [
 					model: object,

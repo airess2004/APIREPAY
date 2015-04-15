@@ -82,6 +82,8 @@ class UserValidatorService {
 		if (object.errors.hasErrors()) return object
 		object = usernameMustEmail(object)
 		if (object.errors.hasErrors()) return object
+		object = nameMustUnique(object)
+		if (object.errors.hasErrors()) return object
 		object = passNotNull(object)
 		return object
 	}
