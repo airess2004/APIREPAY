@@ -2,11 +2,22 @@ package apirepay
 
 import grails.converters.JSON
 import grails.transaction.Transactional
+
 import java.text.SimpleDateFormat
+import java.util.Date;
 
 @Transactional
 class ReimburseService {
 	ReimburseValidationService reimburseValidationService
+	
+	// Simple ISO Converter https://gist.github.com/kdabir/6bfe265d2f3c2f9b438b
+	private String DateToISOString(Date date) {
+		return new Date().format("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", TimeZone.getTimeZone("UTC"));
+	}
+	
+	private Date ISOStringToDate(String dateString) {
+		return Date.parse("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", dateString);
+	}
 
 	def serviceMethod() {
 
@@ -19,21 +30,28 @@ class ReimburseService {
 	
 	def getListFrom(def object,def user2)
 	{
-		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.dateCreated)
+		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(object.dateCreated)
 		return Reimburse.findAll{dateCreated >= date && isDeleted == false && user == user2}
 	}
 	
 	def getList(def object,def user,Integer offset,Integer max,String sortBy,String Order)
 	{
+		def models
+		def result = [models:[], totalRows:0]
 		if (object == null || object.col == null || object.col == "")
 		{
-			return Reimburse.findAllByIsDeletedAndUser(false,user, [max: max, offset: offset ,sort: sortBy, order: Order])
+			models = Reimburse.findAllByIsDeletedAndUser(false,user, [sort: sortBy, order: Order])
+			result.totalRows = models.size()
+			result.models = models.findAll([max: max, offset: offset])
 		}
 		else
 		{
-			return Reimburse.findAll("from Reimburse as b where b.${object.col} = ${object.val} and b.isDeleted = false and b.user.id = ${user.id}",
-					[max: max, offset: offset ,sort: sortBy, order: Order])
+			models = Reimburse.findAll("from Reimburse as b where b.${object.col} ${object.op} ${object.val} and b.isDeleted = false and b.user.id = ${user.id}",
+					[sort: sortBy, order: Order])
+			result.totalRows = models.size()
+			result.models = models.findAll([max: max, offset: offset])
 		}
+		return result;
 	}
 	
 	
@@ -60,11 +78,14 @@ class ReimburseService {
 		valObject.title = object.title
 		valObject.description = object.description
 		valObject.user = object.user
-		valObject.idx = 0
+		valObject.idx = object.idx
 		
+		if (object.lastUpdate != null) {
+			valObject.lastUpdate = ISOStringToDate(object.lastUpdate)
+		}
 		if (valObject.projectDate != null)
 		{
-			valObject.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.projectDate)
+			valObject.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(object.projectDate)
 		}
 		valObject = reimburseValidationService.createObjectValidation(valObject as Reimburse)
 		if (valObject.errors.getErrorCount() == 0)
@@ -78,9 +99,17 @@ class ReimburseService {
 		def valObject = Reimburse.read(object.id)
 		valObject.title = object.title
 		valObject.description = object.description
+		valObject.idx = object.idx
+		valObject.isDone = object.isDone
+		
+		if (!valObject.isDeleted) valObject.isDeleted = object.isDeleted
+		
+		if (object.lastUpdate != null) {
+			valObject.lastUpdate = ISOStringToDate(object.lastUpdate)
+		}
 		if (object.projectDate != null)
 		{
-			valObject.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(object.projectDate)
+			valObject.projectDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").parse(object.projectDate)
 		}
 		valObject = reimburseValidationService.updateObjectValidation(valObject)
 		if (valObject.errors.getErrorCount() == 0)

@@ -12,6 +12,7 @@ class ReimburseDetail {
 	String	urlImageMedium
 	Boolean	isDeleted
 	Reimburse reimburse
+	Date lastUpdate //client's lastUpdate timestamp
 	Date dateCreated
 	Date lastUpdated
 //	static belongsTo = Reimburse

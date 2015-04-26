@@ -16,6 +16,7 @@ class Reimburse {
 	Boolean	isDeleted
 	Integer	status
 	String	sentTo
+	Date lastUpdate //client's lastUpdate timestamp
 	ShiroUser user
 	Date dateCreated
 	Date lastUpdated

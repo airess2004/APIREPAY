@@ -24,16 +24,17 @@ class ReimburseDetailController extends RestfulController {
 				if(params.id && ReimburseDetail.exists(params.id)){
 					def newJson = [
 						model:  ReimburseDetail.findById(params.id),
-						,
 						error: null
 					]
 					render newJson as JSON
 				}else{
-					def newJson = [
-						model: reimburseDetailService.getList(request.JSON.reimburseId,
+					def rows = reimburseDetailService.getList(request.JSON.reimburseId,
 							request.JSON.offset,request.JSON.max,
-							request.JSON.sortBy,request.JSON.order).toArray(),
-						error: null
+							request.JSON.sortBy,request.JSON.order)
+					def newJson = [
+						model: rows.models.toArray(),
+						error: null,
+						totalRows : rows.totalRows,
 					]
 					render newJson as JSON
 				}
@@ -48,12 +49,14 @@ class ReimburseDetailController extends RestfulController {
 					urlImageMedium: request.JSON.model.urlImageMedium,
 					urlImageSmall: request.JSON.model.urlImageSmall,
 					amount: request.JSON.model.amount,
+					lastUpdate:request.JSON.model.lastUpdate,
 					reimburse: Reimburse.findById(request.JSON.model.reimburseId)
 				]
 				object = reimburseDetailService.createObject(object)
 				def newJson = [
-					model: object,
-					error: null
+					model: object.model,
+					error: null,
+					total: object.total,
 				]
 				render newJson as JSON
 				break
@@ -68,12 +71,15 @@ class ReimburseDetailController extends RestfulController {
 					urlImageMedium: request.JSON.model.urlImageMedium,
 					urlImageSmall: request.JSON.model.urlImageSmall,
 					amount: request.JSON.model.amount,
+					lastUpdate:request.JSON.model.lastUpdate,
+					isDeleted:request.JSON.model.isDeleted,
 					reimburse: Reimburse.findById(request.JSON.model.reimburseId)
 				]
 				object = reimburseDetailService.updateObject(object)
 				def newJson = [
-					model: object,
-					error: null
+					model: object.model,
+					error: null,
+					total: object.total,
 				]
 				render newJson as JSON
 				break
@@ -84,8 +90,9 @@ class ReimburseDetailController extends RestfulController {
 				]
 				object = reimburseDetailService.softDeleteObject(object)
 				def newJson = [
-					model: object,
-					error: null
+					model: object.model,
+					error: null,
+					total: object.total,
 				]
 				render newJson as JSON
 				break

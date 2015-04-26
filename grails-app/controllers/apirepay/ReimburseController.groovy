@@ -33,10 +33,13 @@ class ReimburseController extends RestfulController {
 						]
 						render newJson as JSON
 					}else{
+						def rows = reimburseService.getList(request.JSON.filter,User,request.JSON.offset,
+								request.JSON.max,request.JSON.sortBy,request.JSON.order)
+						
 						def newJson = [
-							model: reimburseService.getList(request.JSON.filter,User,request.JSON.offset,
-								request.JSON.max,request.JSON.sortBy,request.JSON.order).toArray(),
-							error: null
+							model: rows.models.toArray(),
+							error: null,
+							totalRows : rows.totalRows,
 						]
 						render  newJson as JSON
 					}
@@ -61,9 +64,11 @@ class ReimburseController extends RestfulController {
 
 				case "create":
 					def object = [
+						idx:request.JSON.model.idx,
 						title:request.JSON.model.title,
 						description:request.JSON.model.description,
 						projectDate:request.JSON.model.projectDate,//.toString(),
+						lastUpdate:request.JSON.model.lastUpdate,
 						user:User
 					]
 					object = reimburseService.createObject(object)
@@ -77,9 +82,13 @@ class ReimburseController extends RestfulController {
 				case "update":
 					def object = [
 						id:request.JSON.model.id,
+						idx:request.JSON.model.idx,
 						title:request.JSON.model.title,
 						description:request.JSON.model.description,
 						projectDate:request.JSON.model.projectDate,
+						lastUpdate:request.JSON.model.lastUpdate,
+						isDone:request.JSON.model.isDone,
+						isDeleted:request.JSON.model.isDeleted,
 						user:User
 					]
 					object = reimburseService.updateObject(object)

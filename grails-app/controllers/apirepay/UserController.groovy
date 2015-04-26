@@ -50,11 +50,11 @@ class UserController extends RestfulController {
 	
 	// Simple ISO Converter https://gist.github.com/kdabir/6bfe265d2f3c2f9b438b
 	private String DateToISOString(Date date) {
-		return new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"));
+		return new Date().format("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", TimeZone.getTimeZone("UTC"));
 	}
 	
 	private Date ISOStringToDate(String dateString) {
-		return Date.parse("yyyy-MM-dd'T'HH:mm:ss'Z'", dateString);
+		return Date.parse("yyyy-MM-dd'T'HH:mm:ss.sss'Z'", dateString);
 	}
 	 
 	private String utcFormat(def date) {
